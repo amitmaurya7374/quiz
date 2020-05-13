@@ -55,87 +55,113 @@ class _QuizScreenState extends State<QuizScreen> {
         backgroundColor: Colors.blueGrey,
       ),
       backgroundColor: Colors.blueGrey,
-      body: Container(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Image.asset(
-                'assets/images/flag.jpg',
-                width: 350,
-                height: 350,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(15),
-              height: 120.0,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.0),
-                  color: Colors.transparent,
-                  border: Border.all(width: 1, color: Colors.white)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    questionBank[_currentQuestionIndex].questionText,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic),
-                  ),
+      body: Builder(
+        builder: (BuildContext context) => Container(
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/images/flag.jpg',
+                  width: 350,
+                  height: 350,
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                RaisedButton(
-                  elevation: 6.0,
-                  color: Colors.blueGrey.shade900,
-                  onPressed: () => _checkAnswer(true),
-                  child: Text(
-                    'True',
-                    style: TextStyle(color: Colors.white),
+              Container(
+                margin: EdgeInsets.all(15),
+                height: 120.0,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14.0),
+                    color: Colors.transparent,
+                    border: Border.all(width: 1, color: Colors.white)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      questionBank[_currentQuestionIndex].questionText,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic),
+                    ),
                   ),
                 ),
-                RaisedButton(
-                  elevation: 6.0,
-                  color: Colors.blueGrey.shade900,
-                  onPressed: () => _checkAnswer(false),
-                  child: Text(
-                    'False',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                RaisedButton(
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  RaisedButton(
                     elevation: 6.0,
                     color: Colors.blueGrey.shade900,
-                    onPressed: () => _nextQuestion(),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.white,
-                    )),
-              ],
-            ),
-          ],
+                    onPressed: () {
+                      _checkAnswer(true, context);
+                      setState(() {
+                        _currentQuestionIndex++;
+                      });
+                      
+                    },
+                    child: Text(
+                      'True',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  RaisedButton(
+                    elevation: 6.0,
+                    color: Colors.blueGrey.shade900,
+                    onPressed: () {
+                      _checkAnswer(false, context);
+                      setState(() {
+                        _currentQuestionIndex++;
+                      });
+                      
+                    },
+                    child: Text(
+                      'False',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  RaisedButton(
+                      elevation: 6.0,
+                      color: Colors.blueGrey.shade900,
+                      onPressed: () => _nextQuestion(),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                      )),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  _checkAnswer(bool userChoice) {
-    if(userChoice == questionBank[_currentQuestionIndex].isCorrect){
+  _checkAnswer(bool userChoice, BuildContext context) {
+    if (userChoice == questionBank[_currentQuestionIndex].isCorrect) {
       //Correct
+      final snackBar = SnackBar(
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+        content: Text('correct'),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
       debugPrint("Yes it is true");
-    }else{
+    } else {
       debugPrint('Incorrect');
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+        content: Text('InCorrect'),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
     }
   }
 
   _nextQuestion() {
     setState(() {
-      _currentQuestionIndex =(_currentQuestionIndex + 1)%questionBank.length;
+      _currentQuestionIndex = (_currentQuestionIndex + 1) % questionBank.length;
     });
   }
 }
